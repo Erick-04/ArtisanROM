@@ -160,32 +160,14 @@ GET_FLOATING_FEATURE_CONFIG()
 # Applies the supplied hex patch to the desidered file.
 HEX_PATCH()
 {
-    _CHECK_NON_EMPTY_PARAM "FILE" "$1" || return 1
-    _CHECK_NON_EMPTY_PARAM "FROM" "$2" || return 1
-    _CHECK_NON_EMPTY_PARAM "TO" "$3" || return 1
+    _CHECK_NON_EMPTY_PARAM "FILE" "$1" || return 2
+    _CHECK_NON_EMPTY_PARAM "FROM" "$2" || return 2
+    _CHECK_NON_EMPTY_PARAM "TO" "$3" || return 2
 
-    local FILE="$1"
-    local FROM="$2"
-    local TO="$3"
-
-    if [ ! -f "$FILE" ]; then
-        LOGE "File not found: ${FILE//$WORK_DIR/}"
-        return 1
-    fi
-
-    FROM="$(tr "[:upper:]" "[:lower:]" <<< "$FROM")"
-    TO="$(tr "[:upper:]" "[:lower:]" <<< "$TO")"
-
-    if ! xxd -p -c 0 "$FILE" | grep -q "$FROM"; then
-        LOGE "No \"$FROM\" match in ${FILE//$WORK_DIR/}"
-        return 1
-    fi
-
-    LOG "- Patching \"$FROM\" to \"$TO\" in ${FILE//$WORK_DIR/}"
-    xxd -p -c 0 "$FILE" | sed "s/$FROM/$TO/" | xxd -r -p > "$FILE.tmp"
-    mv "$FILE.tmp" "$FILE"
-
-    return 0
+    # Match bytes, not hex-string substrings. Only an absent pattern returns 1;
+    # validation and I/O failures return 2 without publishing partial output.
+    LOG "- Patching \"$2\" to \"$3\" in ${1//$WORK_DIR/}"
+    python3 "$SRC_DIR/scripts/utils/hex_patch.py" "$1" "$2" "$3"
 }
 
 # SET_FLOATING_FEATURE_CONFIG "<config>" "<value>"
@@ -205,13 +187,27 @@ SET_FLOATING_FEATURE_CONFIG()
         return 1
     fi
 
-    if grep -q "$CONFIG" "$FILE"; then
+    # Count exact opening tags, including duplicates on the same line.
+    # A substring match could otherwise produce an empty sed address and
+    # replace every line when only a longer feature name exists.
+    local MATCHES MATCH_LINES MATCH_COUNT STATUS
+    STATUS=0
+    MATCHES="$(grep -nFo "<${CONFIG}>" "$FILE")" || STATUS=$?
+    if [ "$STATUS" -gt 1 ]; then
+        return 1
+    fi
+    MATCH_LINES="$(cut -d: -f1 <<< "$MATCHES")"
+    MATCH_COUNT="$([ -n "$MATCHES" ] && wc -l <<< "$MATCHES" || echo 0)"
+    if [ "$MATCH_COUNT" -gt 1 ]; then
+        LOGE "Expected at most one \"$CONFIG\" entry, found $MATCH_COUNT"
+        return 1
+    elif [ "$MATCH_COUNT" -eq 1 ]; then
         if [[ "$VALUE" == "-d" ]] || [[ "$VALUE" == "--delete" ]]; then
             LOG "- Deleting \"$CONFIG\" config in /system/system/etc/floating_feature.xml"
-            sed -i "/<$CONFIG>/d" "$FILE"
+            sed -i "${MATCH_LINES}d" "$FILE"
         else
             LOG "- Replacing \"$CONFIG\" config with \"$VALUE\" in /system/system/etc/floating_feature.xml"
-            sed -i "$(sed -n "/<${CONFIG}>/=" "$FILE") c\ \ \ \ <${CONFIG}>${VALUE}</${CONFIG}>" "$FILE"
+            sed -i "${MATCH_LINES} c\ \ \ \ <${CONFIG}>${VALUE}</${CONFIG}>" "$FILE"
         fi
     elif [[ "$VALUE" != "-d" ]] && [[ "$VALUE" != "--delete" ]]; then
         LOG "- Adding \"$CONFIG\" config with \"$VALUE\" in /system/system/etc/floating_feature.xml"
