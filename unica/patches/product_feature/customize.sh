@@ -368,6 +368,24 @@ if [[ "$SOURCE_FINGERPRINT_CONFIG_SENSOR" != "$TARGET_FINGERPRINT_CONFIG_SENSOR"
                 # TODO handle this condition
                 LOG_MISSING_PATCHES "SOURCE_FINGERPRINT_CONFIG_SENSOR" "TARGET_FINGERPRINT_CONFIG_SENSOR"
             fi
+        elif [[ "$(GET_FINGERPRINT_SENSOR_TYPE "$SOURCE_FINGERPRINT_CONFIG_SENSOR")" == "optical" ]]; then
+            if [[ "$(GET_FINGERPRINT_SENSOR_TYPE "$TARGET_FINGERPRINT_CONFIG_SENSOR")" == "ultrasonic" ]]; then
+                # optical -> ultrasonic (portado de ExtremeROM)
+                APPLY_PATCH "system" "system/framework/framework.jar" \
+                    "$MODPATH/fingerprint/ultrasonic_fp/framework.jar/0001-Set-mSensorType-to-SENSOR_TYPE_ULTRASONIC.patch"
+                APPLY_PATCH "system" "system/framework/services.jar" \
+                    "$MODPATH/fingerprint/ultrasonic_fp/services.jar/0001-Set-FP_FEATURE_SENSOR_IS_OPTICAL-to-false.patch"
+                APPLY_PATCH "system" "system/priv-app/BiometricSetting/BiometricSetting.apk" \
+                    "$MODPATH/fingerprint/ultrasonic_fp/BiometricSetting.apk/0001-Set-FP_FEATURE_SENSOR_IS_OPTICAL-to-false.patch"
+                APPLY_PATCH "system_ext" "priv-app/SystemUI/SystemUI.apk" \
+                    "$MODPATH/fingerprint/ultrasonic_fp/SystemUI.apk/0001-Set-SECURITY_FINGERPRINT_IN_DISPLAY_OPTICAL-to-false.patch"
+
+                SET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_BIOAUTH_CONFIG_FINGERPRINT_FEATURES" "ultrasonic_display_phone"
+                SET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_LCD_CONFIG_LOCAL_HBM" "0"
+            else
+                # TODO handle this condition
+                LOG_MISSING_PATCHES "SOURCE_FINGERPRINT_CONFIG_SENSOR" "TARGET_FINGERPRINT_CONFIG_SENSOR"
+            fi
         else
             # TODO handle this condition
             LOG_MISSING_PATCHES "SOURCE_FINGERPRINT_CONFIG_SENSOR" "TARGET_FINGERPRINT_CONFIG_SENSOR"
