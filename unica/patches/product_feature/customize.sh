@@ -250,7 +250,7 @@ if [[ "$SOURCE_FINGERPRINT_CONFIG_SENSOR" != "$TARGET_FINGERPRINT_CONFIG_SENSOR"
         "$SOURCE_FINGERPRINT_CONFIG_SENSOR" \
         "$TARGET_FINGERPRINT_CONFIG_SENSOR"
     SMALI_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" \
-        "smali_classes4/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils.smali" "replaceall" \
+        "smali_classes5/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils.smali" "replaceall" \
         "$SOURCE_FINGERPRINT_CONFIG_SENSOR" \
         "$TARGET_FINGERPRINT_CONFIG_SENSOR"
 
