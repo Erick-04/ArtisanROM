@@ -444,21 +444,28 @@ if [[ "$SOURCE_LCD_CONFIG_SEAMLESS_BRT" != "$TARGET_LCD_CONFIG_SEAMLESS_BRT" ]] 
             "dumpProductFeature(Ljava/io/PrintWriter;Ljava/lang/String;Z)V" \
             "$SOURCE_LCD_CONFIG_SEAMLESS_BRT" \
             "$TARGET_LCD_CONFIG_SEAMLESS_BRT"
+
+        if [ "$SOURCE_LCD_CONFIG_SEAMLESS_LUX" != "$TARGET_LCD_CONFIG_SEAMLESS_LUX" ]; then
         SMALI_PATCH "system" "system/framework/framework.jar" \
             "smali_classes6/com/samsung/android/hardware/display/RefreshRateConfig.smali" "replace" \
-            "dump(Ljava/io/PrintWriter;Ljava/lang/String;Z)V" \
-            "SEAMLESS_LUX: $SOURCE_LCD_CONFIG_SEAMLESS_LUX" \
-            "SEAMLESS_LUX: $TARGET_LCD_CONFIG_SEAMLESS_LUX"
+            "dumpProductFeature(Ljava/io/PrintWriter;Ljava/lang/String;Z)V" \
+            "$SOURCE_LCD_CONFIG_SEAMLESS_LUX" \
+            "$TARGET_LCD_CONFIG_SEAMLESS_LUX"
+        fi
+        if [ "$SOURCE_LCD_CONFIG_SEAMLESS_BRT" != "$TARGET_LCD_CONFIG_SEAMLESS_BRT" ]; then
         SMALI_PATCH "system" "system/framework/framework.jar" \
             "smali_classes6/com/samsung/android/hardware/display/RefreshRateConfig.smali" "replace" \
             "getMainInstance()Lcom/samsung/android/hardware/display/RefreshRateConfig;" \
             "$SOURCE_LCD_CONFIG_SEAMLESS_BRT" \
             "$TARGET_LCD_CONFIG_SEAMLESS_BRT"
+        fi
+        if [ "$SOURCE_LCD_CONFIG_SEAMLESS_LUX" != "$TARGET_LCD_CONFIG_SEAMLESS_LUX" ]; then
         SMALI_PATCH "system" "system/framework/framework.jar" \
             "smali_classes6/com/samsung/android/hardware/display/RefreshRateConfig.smali" "replace" \
             "getMainInstance()Lcom/samsung/android/hardware/display/RefreshRateConfig;" \
             "$SOURCE_LCD_CONFIG_SEAMLESS_LUX" \
             "$TARGET_LCD_CONFIG_SEAMLESS_LUX"
+        fi
     else
         # TODO handle these conditions
         LOG_MISSING_PATCHES "SOURCE_LCD_CONFIG_SEAMLESS_BRT" "TARGET_LCD_CONFIG_SEAMLESS_BRT" || true
