@@ -4,15 +4,20 @@ Date: Mon, 8 Sep 2025 22:23:09 +0200
 Subject: [PATCH] Allow custom CONNECTION_PERSONALIZATION value
 
 UN1CA: this patch is not complete! Please check unica/patches/product_feature/customize.sh for more info.
+
+Change Id: fbb44c18a7b5f4490c0e41ff849cd63a4e1a4251 Mon Sep 17 00:00:00 2001
+From: Erick-04 <solonsosua@gmail.com>
+Date: Sun, 4 Oct 2026 21:42:22
+
 ---
- .../android/settings/wifi/develop/btm/BtmController.smali       | 2 +-
+ .../settings/wifi/develop/compatibility/btm/BtmController.smali | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/smali_classes3/com/samsung/android/settings/wifi/develop/btm/BtmController.smali b/smali_classes3/com/samsung/android/settings/wifi/develop/btm/BtmController.smali
-index 35f1f2740..3f9a8166d 100644
---- a/smali_classes3/com/samsung/android/settings/wifi/develop/btm/BtmController.smali
-+++ b/smali_classes3/com/samsung/android/settings/wifi/develop/btm/BtmController.smali
-@@ -17,7 +17,7 @@
+diff --git a/smali_classes2/com/samsung/android/settings/wifi/develop/compatibility/btm/BtmController.smali b/smali_classes2/com/samsung/android/settings/wifi/develop/compatibility/btm/BtmController.smali
+index 09a1e4b..d5773bb 100644
+--- a/smali_classes2/com/samsung/android/settings/wifi/develop/compatibility/btm/BtmController.smali
++++ b/smali_classes2/com/samsung/android/settings/wifi/develop/compatibility/btm/BtmController.smali
+@@ -25,7 +25,7 @@
  .method public getAvailabilityStatus()I
      .locals 1
  

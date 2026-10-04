@@ -874,7 +874,7 @@ if [[ "$SOURCE_WLAN_CONFIG_CONNECTION_PERSONALIZATION" != "$TARGET_WLAN_CONFIG_C
         APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" \
             "$MODPATH/wifi/connection_personalization/SecSettings.apk/0001-Allow-custom-CONNECTION_PERSONALIZATION-value.patch"
         SMALI_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" \
-            "smali_classes3/com/samsung/android/settings/wifi/develop/btm/BtmController.smali" "replace" \
+            "smali_classes2/com/samsung/android/settings/wifi/develop/compatibility/btm/BtmController.smali" "replace" \
             "getAvailabilityStatus()I" \
             "CONFIG_CONNECTION_PERSONALIZATION" \
             "$TARGET_WLAN_CONFIG_CONNECTION_PERSONALIZATION" | \
