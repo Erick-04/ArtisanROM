@@ -671,7 +671,7 @@ fi
 if [[ "$SOURCE_RIL_FEATURES" != "$TARGET_RIL_FEATURES" ]]; then
     if [[ "$SOURCE_RIL_FEATURES" != "none" ]]; then
         SMALI_PATCH "system" "system/framework/framework.jar" \
-            "smali_classes4/com/android/internal/telephony/TelephonyFeatures.smali" "replaceall" \
+            "smali_classes6/com/android/internal/telephony/TelephonyFeatures.smali" "replaceall" \
             "$SOURCE_RIL_FEATURES" \
             "${TARGET_RIL_FEATURES//none/}"
         SMALI_PATCH "system" "system/framework/telephony-common.jar" \
