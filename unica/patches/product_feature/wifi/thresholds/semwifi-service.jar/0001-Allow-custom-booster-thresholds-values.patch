@@ -4,40 +4,47 @@ Date: Sun, 12 Jul 2026 20:21:48 +0200
 Subject: [PATCH] Allow custom booster thresholds values
 
 UN1CA: this patch is not complete! Please check unica/patches/product_feature/customize.sh for more info.
+
+Change Id: cd32e269b12ae8129f990e895e04570a79e277e2 Mon Sep 17 00:00:00 2001
+From: Erick-04 <solonsosua@gmail.com>
+Date: Sun, 4 Oct 2026 14:18:34
+
 ---
- .../server/wifi/SemFrameworkFacade.smali      | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../samsung/android/server/wifi/SemFrameworkFacade.smali  | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/smali/com/samsung/android/server/wifi/SemFrameworkFacade.smali b/smali/com/samsung/android/server/wifi/SemFrameworkFacade.smali
-index c275199..6b0c15f 100644
+index ff7e668..08a32e1 100644
 --- a/smali/com/samsung/android/server/wifi/SemFrameworkFacade.smali
 +++ b/smali/com/samsung/android/server/wifi/SemFrameworkFacade.smali
-@@ -350,7 +350,7 @@
+@@ -314,7 +314,7 @@
  .method public getBoosterThresholds()[I
      .locals 3
  
--    const-string p0, "150"
+-    const-string p0, "0"
 +    const-string p0, "CONFIG_DATA_ACTIVITY_AFFINITY_BOOSTER_THRESHOLD"
  
      invoke-static {p0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
  
-@@ -362,7 +362,7 @@
+@@ -326,7 +326,9 @@
  
-     div-int/lit8 p0, p0, 0x8
+     div-int/lit8 v0, v0, 0x8
  
--    const-string v1, "100"
-+    const-string v1, "CONFIG_CPU_CSTATE_DISABLE_THRESHOLD"
+-    invoke-static {p0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
++    const-string v2, "CONFIG_CPU_CSTATE_DISABLE_THRESHOLD"
++
++    invoke-static {v2}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
  
-     invoke-static {v1}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
+     move-result v2
  
-@@ -372,7 +372,7 @@
+@@ -334,6 +336,8 @@
  
-     div-int/lit8 v1, v1, 0x8
+     div-int/lit8 v2, v2, 0x8
  
--    const-string v2, "50"
-+    const-string v2, "CONFIG_L1SS_DISABLE_THRESHOLD"
++    const-string p0, "CONFIG_L1SS_DISABLE_THRESHOLD"
++
+     invoke-static {p0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
  
-     invoke-static {v2}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
- 
+     move-result p0
 -- 
 2.53.0
